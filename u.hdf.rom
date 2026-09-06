@@ -1,10 +1,8 @@
-export const U = {
-  axiom: "U",
-  function: "under-core",
-  ram: "active",
-  vector: "NC.vector.sw",
-  resolver: "tmp.hdf.resolver.js",
-  direction: "SW",
-  uniform: 8,
-  center: 9
+export const U_position = {
+  level: 1,
+  mode: "under",
+  segment: "WARB",
+  symbol: "◆",
+  vector: "SW",
+  timing: 243
 };
