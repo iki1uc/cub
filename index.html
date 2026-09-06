@@ -1,144 +1,712 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🛗 ROOT · Komplexator-System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧊 CUB · HDF‑Cube · b/h/t · STAGE‑Reich</title>
 
-<style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    background:#0b0b0b; color:#e0e0e0; font-family:Consolas, monospace;
-    min-height:100vh;
-  }
-  .content { max-width:900px; margin:0 auto; padding:24px 20px; }
-  h1 { color:#6cf; font-size:22px; letter-spacing:1px; margin-bottom:6px; }
-  p.sub { color:#5a7a8a; font-size:12px; margin-bottom:20px; }
+  <!-- ========================================================= -->
+  <!-- KERN-MODULE (global, werden von allen Etagen genutzt)     -->
+  <!-- ========================================================= -->
+  <script src="coord.js"></script>
+  <script src="aufzug.js"></script>
+  <script src="OS_CORE.js"></script>
 
-  .floor-grid {
-    display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px;
-    margin-bottom:24px;
-  }
-  .floor-card {
-    background:#111; border:1px solid #2a3a4a; border-radius:10px; padding:16px;
-    text-decoration:none; color:#e0e0e0; display:block; transition:.2s;
-  }
-  .floor-card:hover { border-color:#6cf; transform:translateY(-2px); }
-  .floor-card .icon { font-size:26px; }
-  .floor-card .name { font-size:13px; margin-top:6px; color:#d0e0e8; }
-  .floor-card .path { font-size:9px; color:#4a5a6a; margin-top:4px; }
+  <!-- ========================================================= -->
+  <!-- ACHSEN-MODULE (b/h/t – HDF-Cube-Grundlage)               -->
+  <!-- ========================================================= -->
+  <script src="b/axiom.map.js"></script>
+  <script src="h/axiom.map.js"></script>
+  <script src="t/axiom.map.js"></script>
 
-  h3 { color:#f0d080; font-size:13px; margin:18px 0 8px; letter-spacing:1px; }
-
-  #aufzugSharedLog {
-    background:#111; padding:10px 14px; border-radius:8px; border:1px solid #2a3a4a;
-    height:160px; overflow:auto; font-size:11px; line-height:1.6;
-  }
-
-  .shared-values {
-    background:#111; padding:10px 14px; border-radius:8px; border:1px solid #2a3a4a;
-    font-size:11px; color:#8ab0c0;
-    white-space:pre-line;
-  }
-</style>
-
-<script src="aufzug.js"></script>
-<script src="kernel.js"></script>
-<script src="move.js"></script>
-
-</head>
-<body>
-  <div class="content">
-    <h1>🛗 ROOT · Komplexator-System</h1>
-    <p class="sub">Globaler Orbit‑Kernel, Drift‑Matrix, Axiom‑Zonen, Work‑State, RIR — alles in einer Datei.</p>
-
-    <h3>🏢 ETAGEN</h3>
-    <div class="floor-grid" id="floorGrid"></div>
-
-    <h3>🌌 GLOBALER KOMPLEXATOR</h3>
-    <div class="shared-values" id="sharedValues">– noch keine Etage besucht –</div>
-
-    <h3>📜 GETEILTES LOG</h3>
-    <div id="aufzugSharedLog"></div>
-  </div>
-
-<script>
-  // Etagen rendern
-  const grid = document.getElementById('floorGrid');
-  Aufzug.FLOORS.filter(f => !f.isRoot).forEach(f => {
-    const a = document.createElement('a');
-    a.className = 'floor-card';
-    a.href = f.path;
-    a.innerHTML = `
-      <div class="icon">${f.icon}</div>
-      <div class="name">${f.name}</div>
-      <div class="path">${f.path}</div>`;
-    grid.appendChild(a);
-  });
-
-  // GLOBALER KOMPLEXATOR
-  function renderKomplexator(orbitIndex) {
-
-    const kernel = trackAll(
-      orbitIndex,
-      classifyAxiom(orbitIndex),
-      orbitIndex % 3,
-      orbitIndex % 9,
-      orbitIndex % 27
-    );
-
-    return `
-🌌 KOMPLEXATOR · GLOBALER ORBIT-KERNEL
-
-Orbit: ${orbitIndex}
-Zone: ${kernel.axiomTag.zone}
-Tiefe: ${kernel.axiomTag.depth}
-Axiom: ${kernel.axiomTag.input}
-Klasse: ${kernel.axiomTag.class}
-
-Drift:
-  linear: ${kernel.kernel[0].drift_linear}
-  modular: ${kernel.kernel[0].drift_modular}
-  ratio: ${kernel.kernel[0].drift_ratio}
-
-Work-State:
-  load: ${kernel.work.load}
-  cycle: ${kernel.work.cycle}
-  active: ${kernel.work.active}
-
-RIR:
-  invert: ${JSON.stringify(kernel.rir.invert)}
-  sum: ${kernel.rir.sum}
-  product: ${kernel.rir.product}
-  parity: ${kernel.rir.parity}
-
-Blitz:
-  impulse: ${kernel.blitz.impulse}
-  charge: ${kernel.blitz.charge}
-  decay: ${kernel.blitz.decay}
-
-Meta:
-  timestamp: ${kernel.meta.timestamp}
-  version: ${kernel.meta.version}
-`;
-  }
-
-  // Shared Values anzeigen
-  function renderSharedValues() {
-    const box = document.getElementById('sharedValues');
-    const orbitIndex = Aufzug.getSharedValue('orbitIndex');
-
-    if (orbitIndex === undefined) {
-      box.textContent = '– noch keine Etage besucht –';
-      return;
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    box.textContent = renderKomplexator(orbitIndex);
+    body {
+      background: #0b0b0b;
+      color: #e0e0e0;
+      font-family: 'Consolas', 'Courier New', monospace;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .container {
+      max-width: 1400px;
+      width: 100%;
+      background: #0e141c;
+      border-radius: 28px;
+      padding: 24px 28px 30px;
+      border: 1px solid #1a2a3a;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    }
+
+    /* ─── HEADER ─────────────────────────────────────────────── */
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #2a3a4a;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      color: #6cf;
+      font-size: 28px;
+      font-weight: 300;
+      letter-spacing: 3px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header h1 small {
+      color: #5a7a8a;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
+
+    .header .badge {
+      background: #1a2a3a;
+      padding: 4px 16px;
+      border-radius: 30px;
+      font-size: 12px;
+      color: #8ab0c0;
+      border: 1px solid #2a4a5a;
+    }
+
+    .status-leds {
+      display: flex;
+      gap: 18px;
+      font-size: 12px;
+      color: #5a7a8a;
+    }
+
+    .status-leds span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .led {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #2a4a5a;
+      transition: 0.3s;
+    }
+
+    .led.on {
+      background: #8cf0d0;
+      box-shadow: 0 0 12px #8cf0d0;
+    }
+
+    .led.pulse {
+      background: #f0d080;
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; transform: scale(0.8); }
+      50%      { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* ─── CUBE-LAYOUT ────────────────────────────────────────── */
+    .cube-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 12px 0 20px;
+    }
+
+    .cube-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      max-width: 540px;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #0a0a0f;
+      padding: 8px;
+      border-radius: 16px;
+      border: 1px solid #1a2a3a;
+    }
+
+    .cube-layer {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .cube-cell {
+      background: #111;
+      border: 1px solid #2a3a4a;
+      border-radius: 8px;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #5a7a8a;
+      transition: all 0.2s ease;
+      cursor: default;
+      padding: 4px;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cube-cell .coord-label {
+      font-size: 8px;
+      color: #3a4a5a;
+      position: absolute;
+      top: 3px;
+      left: 5px;
+    }
+
+    .cube-cell .content {
+      font-size: 9px;
+      color: #b0c8d8;
+      line-height: 1.2;
+      word-break: break-word;
+      max-width: 100%;
+    }
+
+    .cube-cell .content .icon {
+      font-size: 16px;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .cube-cell .content .name {
+      font-size: 8px;
+      color: #d0e0e8;
+    }
+
+    .cube-cell .content .status {
+      font-size: 6px;
+      color: #5a7a8a;
+      margin-top: 2px;
+    }
+
+    .cube-cell.occupied {
+      border-color: #6cf;
+      background: #0a1a2a;
+    }
+
+    .cube-cell.occupied .content .name {
+      color: #8cf0d0;
+    }
+
+    .cube-cell.occupied .content .status {
+      color: #b388ff;
+    }
+
+    .cube-cell.axis {
+      border-color: #f0d080;
+      background: #1a1400;
+    }
+
+    .cube-cell.axis .content .name {
+      color: #f0d080;
+    }
+
+    /* ─── LEGENDE ────────────────────────────────────────────── */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      font-size: 10px;
+      color: #5a7a8a;
+      margin: 8px 0 4px;
+    }
+
+    .legend .item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend .color-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 4px;
+    }
+
+    .legend .color-dot.occupied {
+      background: #6cf;
+    }
+
+    .legend .color-dot.axis {
+      background: #f0d080;
+    }
+
+    .legend .color-dot.empty {
+      background: #2a3a4a;
+    }
+
+    /* ─── SYNC-BAR ───────────────────────────────────────────── */
+    .sync-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      background: #0e141c;
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 1px solid #1a2a3a;
+      margin: 14px 0 8px;
+    }
+
+    .sync-bar .label {
+      font-size: 11px;
+      color: #b388ff;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sync-bar input {
+      flex: 1;
+      background: #1a1a2a;
+      border: 1px solid #2a3a4a;
+      color: #d0e0e8;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-family: inherit;
+      min-width: 120px;
+    }
+
+    .sync-bar input::placeholder {
+      color: #4a5a6a;
+    }
+
+    .sync-bar button {
+      background: #1a1a2a;
+      border: 1px solid #2a3a4a;
+      color: #9ab0c0;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .sync-bar button:hover {
+      background: #2a3a4a;
+      border-color: #6cf;
+      color: #d0e8f8;
+    }
+
+    .sync-bar button.sync {
+      border-color: rgba(179, 136, 255, 0.2);
+      color: #b388ff;
+    }
+
+    .sync-bar button.sync:hover {
+      background: rgba(179, 136, 255, 0.1);
+      border-color: #b388ff;
+    }
+
+    /* ─── LOG ────────────────────────────────────────────────── */
+    .log-box {
+      background: #111;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #2a3a4a;
+      font-size: 11px;
+      line-height: 1.6;
+      max-height: 140px;
+      overflow-y: auto;
+      color: #5a7a8a;
+      margin-top: 6px;
+    }
+
+    .log-box .entry {
+      border-bottom: 1px solid #0e1620;
+      padding: 2px 0;
+    }
+
+    .log-box .time {
+      color: #2a3a4a;
+    }
+
+    .log-box .floor {
+      color: #6cf;
+    }
+
+    .log-box .msg {
+      color: #8ab0c0;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    .footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 18px;
+      padding: 8px 16px;
+      background: #0e141c;
+      border-radius: 12px;
+      border: 1px solid #1a2a3a;
+      font-size: 10px;
+      color: #3a4a5a;
+    }
+
+    .footer .gold {
+      color: #f0d080;
+    }
+
+    .footer .stat {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #080c12;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #1a2a3a;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ========================================================= -->
+  <!-- HEADER                                                    -->
+  <!-- ========================================================= -->
+  <div class="header">
+    <h1>🧊 CUB · HDF‑Cube <small>b/h/t · 3×3×3</small></h1>
+    <div class="status-leds">
+      <span><span class="led on" id="ledSystem"></span> SYSTEM</span>
+      <span><span class="led pulse" id="ledReich"></span> REICH</span>
+      <span><span class="led" id="ledCube"></span> CUB</span>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- CUBE-VISUALISIERUNG                                       -->
+  <!-- ========================================================= -->
+  <div class="cube-wrapper">
+    <div class="cube-grid" id="cubeGrid"></div>
+    <div class="legend">
+      <span class="item"><span class="color-dot occupied"></span> belegte Zelle (Etage)</span>
+      <span class="item"><span class="color-dot axis"></span> Achsen‑Zelle (b/h/t)</span>
+      <span class="item"><span class="color-dot empty"></span> leer</span>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- SYNC-BAR                                                  -->
+  <!-- ========================================================= -->
+  <div class="sync-bar">
+    <span class="label"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#b388ff;"></span> arg.sync</span>
+    <input type="text" id="syncInput" placeholder="Nachricht an Etagen…" value="sync:cub">
+    <button class="sync" id="btnSync">🔄 SYNC</button>
+    <button id="btnBroadcast">📡 BROADCAST</button>
+    <button id="btnReset">⟲ RESET</button>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- LOG                                                       -->
+  <!-- ========================================================= -->
+  <div class="log-box" id="logBox">
+    <div class="entry"><span class="time">[INIT]</span> <span class="floor">🧊 CUB</span> <span class="msg">HDF‑Cube geladen · 27 Zellen · 3×3×3</span></div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- FOOTER                                                    -->
+  <!-- ========================================================= -->
+  <div class="footer">
+    <span class="stat"><span class="gold">★</span> CUB · HDF‑Cube · b/h/t</span>
+    <span class="stat">🔷 <span id="fOccupied">0</span>/27 belegt</span>
+    <span class="stat">⚡ <span id="fSyncCount">0</span> SYNCs</span>
+    <span class="stat">⌨️  s=Sync  b=Broadcast  r=Reset</span>
+  </div>
+
+</div>
+
+<script>
+  "use strict";
+
+  /* ==============================================================
+     CUB · HDF‑Cube · 3×3×3
+     Visualisiert alle Achsen (b/h/t) und Stages aus COORD.
+     Jede Zelle kann eine Etage enthalten oder als Achse markiert sein.
+     ============================================================== */
+
+  // ─── 1. FALLBACKS FÜR FEHLENDE MODULE ─────────────────────────
+  if (typeof COORD === 'undefined') {
+    console.warn('⚠️ coord.js nicht gefunden – lege eigene COORD an.');
+    window.COORD = {
+      axes: { b: 'Breite (X)', h: 'Höhe (Y)', t: 'Tiefe (Z)' },
+      stages: {},
+      register: function(id, x, y, z) { this.stages[id] = { x, y, z }; },
+      get: function(id) { return this.stages[id] || null; }
+    };
   }
 
-  renderSharedValues();
-  Aufzug.init({ currentId: 'root', basePath: '' });
-</script>
+  if (typeof Aufzug === 'undefined') {
+    console.warn('⚠️ aufzug.js nicht gefunden – lege eigene Aufzug an.');
+    window.Aufzug = {
+      FLOORS: [],
+      init: function() {},
+      log: function() {},
+      getSharedLog: function() { return []; },
+      setSharedValue: function() {}
+    };
+  }
 
+  // ─── 2. CUBE-DATEN ─────────────────────────────────────────────
+  // 3×3×3 = 27 Zellen
+  // Achsen: b = X (0..2), h = Y (0..2), t = Z (0..2)
+  const CUBE_SIZE = 3;
+  const TOTAL_CELLS = CUBE_SIZE * CUBE_SIZE * CUBE_SIZE;
+
+  // Erzeuge alle Zellen mit ihren Koordinaten
+  function buildCubeCells() {
+    const cells = [];
+    for (let z = 0; z < CUBE_SIZE; z++) {
+      for (let y = 0; y < CUBE_SIZE; y++) {
+        for (let x = 0; x < CUBE_SIZE; x++) {
+          cells.push({ x, y, z });
+        }
+      }
+    }
+    return cells;
+  }
+
+  // ─── 3. CUBE RENDERN ───────────────────────────────────────────
+  function renderCube() {
+    const grid = document.getElementById('cubeGrid');
+    grid.innerHTML = '';
+
+    const cells = buildCubeCells();
+    let occupiedCount = 0;
+
+    // Alle registrierten Stages durchgehen und in COORD nachschlagen
+    const stages = COORD.stages || {};
+    const stageEntries = Object.entries(stages);
+
+    // Für jede Zelle prüfen, ob eine Stage dort liegt
+    cells.forEach(cell => {
+      const { x, y, z } = cell;
+      const cellDiv = document.createElement('div');
+      cellDiv.className = 'cube-cell';
+
+      // Koordinaten-Label
+      const label = document.createElement('span');
+      label.className = 'coord-label';
+      label.textContent = `${x+1}/${y+1}/${z+1}`;
+      cellDiv.appendChild(label);
+
+      // Inhalt (Stage oder leer)
+      const content = document.createElement('div');
+      content.className = 'content';
+
+      // Prüfen, ob eine Stage diese Koordinaten hat
+      const matching = stageEntries.filter(([id, coord]) =>
+        coord.x === x && coord.y === y && coord.z === z
+      );
+
+      // Prüfen, ob es sich um eine Achsen-Zelle handelt (b/h/t an ihren Positionen)
+      const isAxis = (x === 1 && y === 0 && z === 0) || // b
+                     (x === 0 && y === 1 && z === 0) || // h
+                     (x === 0 && y === 0 && z === 1);   // t
+
+      if (matching.length > 0) {
+        // Mehrere Stages pro Zelle möglich (selten)
+        const stage = matching[0];
+        const id = stage[0];
+        const icon = getIconForStage(id);
+        content.innerHTML = `
+          <span class="icon">${icon}</span>
+          <span class="name">${id}</span>
+          <span class="status">✅ legitimiert</span>
+        `;
+        cellDiv.classList.add('occupied');
+        occupiedCount++;
+      } else if (isAxis) {
+        // Achsen-Zelle
+        const axisName = x === 1 ? 'b (Breite)' :
+                         y === 1 ? 'h (Höhe)' :
+                         't (Tiefe)';
+        content.innerHTML = `
+          <span class="icon">📐</span>
+          <span class="name">${axisName}</span>
+          <span class="status">Achse</span>
+        `;
+        cellDiv.classList.add('axis');
+      } else {
+        // Leere Zelle
+        content.innerHTML = `
+          <span class="icon">·</span>
+          <span class="name" style="color:#2a3a4a;">leer</span>
+        `;
+      }
+
+      cellDiv.appendChild(content);
+      grid.appendChild(cellDiv);
+    });
+
+    document.getElementById('fOccupied').textContent = occupiedCount;
+    document.getElementById('ledCube').className = 'led ' + (occupiedCount > 0 ? 'on' : '');
+  }
+
+  // ─── 4. HILFSFUNKTIONEN ────────────────────────────────────────
+  function getIconForStage(id) {
+    const icons = {
+      'root': '🛗',
+      'stage': '🎛️',
+      'ui': '🖥️',
+      'etage-8-orbit-viewer': '🌀',
+      'b': '📐',
+      'h': '📐',
+      't': '📐',
+      'NC_figur': '🧩',
+      'NC_kraft': '⚡',
+      'NC_space': '🌌',
+      'NC_time': '⏳',
+      'vec3': '📊',
+      'vec9': '📊'
+    };
+    return icons[id] || '📁';
+  }
+
+  // ─── 5. LOG ────────────────────────────────────────────────────
+  function log(msg, floor = '🧊 CUB') {
+    const box = document.getElementById('logBox');
+    const time = new Date().toLocaleTimeString('de-DE');
+    const entry = document.createElement('div');
+    entry.className = 'entry';
+    entry.innerHTML = `<span class="time">[${time}]</span> <span class="floor">${floor}</span> <span class="msg">${msg}</span>`;
+    box.appendChild(entry);
+    box.scrollTop = box.scrollHeight;
+    while (box.children.length > 40) box.removeChild(box.firstChild);
+  }
+
+  // ─── 6. SYNC-FUNKTIONEN ────────────────────────────────────────
+  let syncCount = 0;
+
+  function doSync(message) {
+    const msg = message || document.getElementById('syncInput').value.trim() || 'sync:cub';
+    syncCount++;
+    document.getElementById('fSyncCount').textContent = syncCount;
+
+    // LED kurz aufleuchten
+    const led = document.getElementById('ledSystem');
+    led.className = 'led pulse';
+    setTimeout(() => { led.className = 'led on'; }, 300);
+
+    // An Etagen senden (per postMessage)
+    document.querySelectorAll('iframe').forEach(iframe => {
+      try {
+        iframe.contentWindow.postMessage({ type: 'arg.sync', payload: msg, from: 'cub' }, '*');
+      } catch (_) {}
+    });
+
+    log(`⬆ SYNC: ${msg}`, '🛗 ROOT');
+  }
+
+  function broadcastSync() {
+    doSync(document.getElementById('syncInput').value.trim() || 'broadcast:cub');
+  }
+
+  function resetAll() {
+    syncCount = 0;
+    document.getElementById('fSyncCount').textContent = '0';
+    log('⟲ RESET – Cube neu geladen', '🧊 CUB');
+    renderCube();
+  }
+
+  // ─── 7. EVENT-BINDING ──────────────────────────────────────────
+  document.getElementById('btnSync').addEventListener('click', () => doSync());
+  document.getElementById('btnBroadcast').addEventListener('click', broadcastSync);
+  document.getElementById('btnReset').addEventListener('click', resetAll);
+
+  document.getElementById('syncInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') doSync();
+  });
+
+  // ─── 8. TASTATUR ──────────────────────────────────────────────
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 's' || e.key === 'S') { e.preventDefault(); doSync(); }
+    if (e.key === 'b' || e.key === 'B') { e.preventDefault(); broadcastSync(); }
+    if (e.key === 'r' || e.key === 'R') { e.preventDefault(); resetAll(); }
+  });
+
+  // ─── 9. POSTMESSAGE-EMPFAENGER ────────────────────────────────
+  window.addEventListener('message', (event) => {
+    const data = event.data;
+    if (data && data.type === 'arg.sync') {
+      const from = data.from || 'unbekannt';
+      const payload = data.payload || '';
+      document.getElementById('syncInput').value = payload;
+      log(`📨 Empfangen von ${from}: ${payload}`, '🧊 CUB');
+      syncCount++;
+      document.getElementById('fSyncCount').textContent = syncCount;
+    }
+    if (data && data.type === 'etage.ready') {
+      const from = data.from || 'unbekannt';
+      log(`✅ Etage ${from} ist bereit`, '🧊 CUB');
+      // Etage möglicherweise in COORD nachtragen
+      if (!COORD.get(from)) {
+        const idx = Object.keys(COORD.stages).length + 1;
+        COORD.register(from, idx % 3, Math.floor(idx / 3) % 3, Math.floor(idx / 9));
+        renderCube();
+      }
+    }
+  });
+
+  // ─── 10. INIT ──────────────────────────────────────────────────
+  function init() {
+    // Aufzug initialisieren
+    if (Aufzug.init) {
+      Aufzug.init({ currentId: 'cub', basePath: '' });
+    }
+
+    // Cube rendern
+    renderCube();
+
+    // Begrüßung
+    log('🧊 HDF‑Cube initialisiert · 3×3×3 · b/h/t-Achsen', '🧊 CUB');
+    log('📐 Achsen: b (X), h (Y), t (Z)', '🧊 CUB');
+    log('⌨️  s=Sync  b=Broadcast  r=Reset', '🧊 CUB');
+
+    document.getElementById('ledSystem').className = 'led on';
+    document.getElementById('ledReich').className = 'led pulse';
+  }
+
+  if (document.readyState === 'complete') {
+    init();
+  } else {
+    window.addEventListener('load', init);
+  }
+</script>
 </body>
 </html>
