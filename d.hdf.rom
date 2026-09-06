@@ -1,11 +1,8 @@
-export const D = {
-  axiom: "D",
-  function: "data-flow",
-  ram: "active",
-  vector: "NC.vector.next",
-  resolver: "tmp.hdf.resolver.js",
-  direction: "N",
-  uniform: 8,
-  center: 9
+export const D_position = {
+  level: 1,        // Axiom-Level (1 = normal, 2 = hoch, 3 = orbit)
+  mode: "normal",  // normal | inverse | orbit | air | aiv
+  segment: "HY",   // HY | PE | PER | TRANS | WARB | KANAL | TMP-alpha/beta/gamma
+  symbol: "◉",     // ◉ ◎ ◆ △ ▣
+  vector: "N",     // N NE E SE S SW W NW
+  timing: 3        // 3 | 9 | 81 | 27 | 3↺
 };
-
