@@ -1,1 +1,37 @@
+// hdf.tmp.ready — TMP-Konstellations-Checker
+
+import { HDF_CONSTELLATION } from "./hdf.constellation.map.js";
+
+export function HDF_TMP_READY() {
+
+  const seen = new Map();
+  const alerts = [];
+
+  for (const station in HDF_CONSTELLATION) {
+    const constellation = HDF_CONSTELLATION[station];
+    const key = constellation.join("-");
+
+    // TMP darf NICHT geteilt werden
+    if (station === "d.hdf.rom") {
+      seen.set(key, station);
+      continue;
+    }
+
+    // Prüfen, ob Konstellation bereits existiert
+    if (seen.has(key)) {
+      alerts.push({
+        level: "DEFCON-3",
+        station,
+        conflictWith: seen.get(key),
+        constellation
+      });
+    } else {
+      seen.set(key, station);
+    }
+  }
+
+  return alerts.length > 0
+    ? alerts
+    : [{ level: "OK", msg: "Alle HDF-Konstellationen sind eindeutig." }];
+}
 
