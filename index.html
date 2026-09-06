@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛗 ROOT · Aufzug-System</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:#0b0b0b; color:#e0e0e0; font-family:Consolas, monospace;
+    min-height:100vh;
+  }
+  .content { max-width:900px; margin:0 auto; padding:24px 20px; }
+  h1 { color:#6cf; font-size:22px; letter-spacing:1px; margin-bottom:6px; }
+  p.sub { color:#5a7a8a; font-size:12px; margin-bottom:20px; }
+  .floor-grid {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px;
+    margin-bottom:24px;
+  }
+  .floor-card {
+    background:#111; border:1px solid #2a3a4a; border-radius:10px; padding:16px;
+    text-decoration:none; color:#e0e0e0; display:block; transition:.2s;
+  }
+  .floor-card:hover { border-color:#6cf; transform:translateY(-2px); }
+  .floor-card .icon { font-size:26px; }
+  .floor-card .name { font-size:13px; margin-top:6px; color:#d0e0e8; }
+  .floor-card .path { font-size:9px; color:#4a5a6a; margin-top:4px; }
+  h3 { color:#f0d080; font-size:13px; margin:18px 0 8px; letter-spacing:1px; }
+  #aufzugSharedLog {
+    background:#111; padding:10px 14px; border-radius:8px; border:1px solid #2a3a4a;
+    height:160px; overflow:auto; font-size:11px; line-height:1.6;
+  }
+  .shared-values {
+    background:#111; padding:10px 14px; border-radius:8px; border:1px solid #2a3a4a;
+    font-size:11px; color:#8ab0c0;
+  }
+</style>
+<script src="aufzug.js"></script>
+</head>
+<body>
+  <div class="content">
+    <h1>🛗 ROOT · Aufzug-System</h1>
+    <p class="sub">Hier sitzt der root-Baum. Jede Etage liegt in ihrem eigenen Unterordner mit eigener index.html — verbunden über <code>aufzug.js</code>.</p>
+
+    <h3>🏢 ETAGEN</h3>
+    <div class="floor-grid" id="floorGrid"></div>
+
+    <h3>🔗 GETEILTER ZUSTAND (von den Etagen weitergereicht)</h3>
+    <div class="shared-values" id="sharedValues">– noch keine Etage besucht –</div>
+
+    <h3>📜 GETEILTES LOG (etagenübergreifend)</h3>
+    <div id="aufzugSharedLog"></div>
+  </div>
+
+  <script>
+    // Etagen-Kacheln aus der Registry rendern (ohne Root selbst)
+    const grid = document.getElementById('floorGrid');
+    Aufzug.FLOORS.filter(f => !f.isRoot).forEach(f => {
+      const a = document.createElement('a');
+      a.className = 'floor-card';
+      a.href = f.path;
+      a.innerHTML = `<div class="icon">${f.icon}</div><div class="name">${f.name}</div><div class="path">${f.path}</div>`;
+      grid.appendChild(a);
+    });
+
+    // Geteilte Werte anzeigen, die eine Etage z.B. per Aufzug.setSharedValue() hinterlassen hat
+    function renderSharedValues() {
+      const box = document.getElementById('sharedValues');
+      const orbitIndex = Aufzug.getSharedValue('orbitIndex');
+      if (orbitIndex === undefined) { box.textContent = '– noch keine Etage besucht –'; return; }
+      box.textContent = `Letzter Orbit-Index (aus Etage 1): ${orbitIndex}`;
+    }
+    renderSharedValues();
+
+    Aufzug.init({ currentId: 'root', basePath: '' });
+  </script>
+</body>
+</html>

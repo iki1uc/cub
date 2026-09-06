@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌀 Etage 1 · IKI1UC Axiom-Orbit-System</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0b0b0b; color:#e0e0e0; font-family:Consolas, monospace; }
+  .content { max-width:700px; margin:0 auto; padding:20px; }
+  h1 { color:#6cf; font-size:20px; margin-bottom:14px; }
+  #orbitCanvas { background:#000; border:1px solid #333; display:block; margin-bottom:10px; }
+  .btn { padding:8px 14px; background:#222; color:#fff; border:1px solid #555; cursor:pointer; font-family:inherit; }
+  .btn:hover { border-color:#6cf; }
+  #log { background:#111; padding:10px; height:140px; overflow:auto; font-size:12px; margin-top:6px; }
+  h3 { color:#f0d080; margin-top:16px; font-size:13px; }
+  p.axis { color:#c0d0d0; }
+  .note {
+    background:#1a1400; border:1px solid #4a3a00; color:#f0d080;
+    padding:8px 12px; border-radius:6px; font-size:11px; margin-bottom:14px;
+  }
+</style>
+<!-- gemeinsames Aufzug-Skript: Navigation + geteilte Fähigkeiten/State -->
+<script src="../aufzug.js"></script>
+</head>
+<body>
+<div class="content">
+  <h1>IKI1UC · Axiom-Orbit-Matrix</h1>
+
+  <div class="note">
+    ℹ️ Die ursprünglichen &lt;script src="core.js"&gt;, "SYS.js", "axiom.js", "rawator*.js", "RESPO.room.js" usw. wurden entfernt,
+    da diese Dateien hier nicht vorliegen und die Seite sonst mit 404-Fehlern nicht läuft.
+    Falls du sie hast, leg sie einfach in diesen Ordner und binde sie oben wieder ein — der Orbit-Code unten läuft eigenständig.
+  </div>
+
+  <canvas id="orbitCanvas" width="600" height="300"></canvas>
+  <button class="btn" onclick="stepOrbit()">Orbit-Schritt</button>
+  <button class="btn" onclick="resetOrbit()">Reset</button>
+
+  <h3>IQQ-Achse</h3>
+  <p class="axis">9 → 3 → 9 → 3</p>
+
+  <h3>OCTA-Orbit</h3>
+  <p class="axis">◎ ◉ ◆ △ ▣ ↺</p>
+
+  <h3>A81-Potenzen</h3>
+  <p class="axis">27 · 81 · 243 · 729</p>
+
+  <h3>Log (diese Etage)</h3>
+  <div id="log">System geladen.</div>
+</div>
+
+<script>
+  const orbit = ["◉","↗","↘","3","9","↘","↗","◎","↗","↘","3","9","↘","↗","◎","↗","↘","81","◆","↘","↗","△","↗","↘","27","▣","↘","↗","3","↺"];
+  let index = 0;
+
+  function drawOrbit() {
+    const c = document.getElementById("orbitCanvas");
+    const ctx = c.getContext("2d");
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.fillStyle = "#6cf";
+    ctx.font = "40px Consolas";
+    ctx.fillText(orbit[index], 280, 150);
+  }
+
+  function stepOrbit() {
+    index++;
+    if (index >= orbit.length) {
+      index = orbit.length - 1; // sauberer Stopp statt Absturz am Ende der Matrix
+      log("Orbit-Ende erreicht — Index bleibt auf letzter Position.");
+    } else {
+      log("Orbit-Schritt: " + orbit[index]);
+    }
+    drawOrbit();
+    // Fähigkeit weiterreichen: aktueller Orbit-Index wird für andere Etagen/Root sichtbar
+    Aufzug.setSharedValue('orbitIndex', index);
+    Aufzug.log(`Orbit-Schritt ausgeführt (Index ${index}: "${orbit[index]}")`);
+  }
+
+  function resetOrbit() {
+    index = 0;
+    log("Orbit zurückgesetzt.");
+    drawOrbit();
+    Aufzug.setSharedValue('orbitIndex', index);
+    Aufzug.log('Orbit zurückgesetzt (Index 0)');
+  }
+
+  function log(msg) {
+    const logBox = document.getElementById("log");
+    logBox.innerHTML += "<br>" + msg;
+    logBox.scrollTop = logBox.scrollHeight;
+  }
+
+  drawOrbit();
+  Aufzug.init({ currentId: 'etage-1-axiom-orbit', basePath: '../' });
+</script>
+</body>
+</html>
