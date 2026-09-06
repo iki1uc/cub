@@ -1,1 +1,57 @@
+export function GPU_WORK_READY(canvasId = "gpuCanvas") {
+
+    // Canvas erzeugen, falls nicht vorhanden
+    let canvas = document.getElementById(canvasId);
+    if (!canvas) {
+        canvas = document.createElement("canvas");
+        canvas.id = canvasId;
+        canvas.width = 800;
+        canvas.height = 600;
+        document.body.appendChild(canvas);
+    }
+
+    const ctx = canvas.getContext("2d");
+
+    // cub‑Axiom Ableitung
+    const axioms = [3, 9, 27, 81, 729];
+
+    function derive(value) {
+        return axioms.map(a => ({
+            axiom: a,
+            drift: value / a,
+            mod: value % a,
+            depth: Math.log(a) / Math.log(3)
+        }));
+    }
+
+    // GPU‑Work‑Visualisierung
+    function render(value) {
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const data = derive(value);
+
+        ctx.fillStyle = "#0f0";
+        ctx.font = "16px Consolas";
+
+        ctx.fillText("GPU.work.ready – Ableitung", 20, 30);
+
+        data.forEach((d, i) => {
+            ctx.fillText(
+                `Axiom ${d.axiom} | drift=${d.drift.toFixed(4)} | mod=${d.mod} | depth=${d.depth}`,
+                20,
+                70 + i * 30
+            );
+        });
+    }
+
+    // Startwert (du kannst ihn später dynamisch setzen)
+    render(42);
+
+    return {
+        canvas,
+        render,
+        derive
+    };
+}
 
