@@ -1,0 +1,34 @@
+export const RIR = {
+
+  // 1. Existenzprüfung
+  exist(input) {
+    return input !== undefined && input !== null;
+  },
+
+  // 2. Strukturprüfung
+  structure(input) {
+    if (typeof input !== "object") return false;
+    return ["x", "y", "z"].every(key => key in input);
+  },
+
+  // 3. Reinheitsprüfung
+  purity(input) {
+    const { x, y, z } = input;
+    return Number.isFinite(x) && Number.isFinite(y) && Number.isFinite(z);
+  },
+
+  // 4. Filter: alles zusammen
+  filter(input) {
+    if (!this.exist(input)) return null;
+    if (!this.structure(input)) return null;
+    if (!this.purity(input)) return null;
+    return input;
+  },
+
+  // 5. Rückgabe: nur reine Impulse
+  return(input) {
+    const packet = this.filter(input);
+    if (!packet) return { RIR: "reject" };
+    return { RIR: "accept", packet };
+  }
+};
