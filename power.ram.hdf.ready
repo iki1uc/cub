@@ -1,1 +1,38 @@
+// power.ram.hdf.ready — RAM-Power + HDF-Konstellations-Checker
+
+import { HDF_CONSTELLATION } from "./hdf.constellation.map.js";
+
+export function POWER_RAM_HDF_READY() {
+
+  const seen = new Map();
+  const alerts = [];
+
+  for (const station in HDF_CONSTELLATION) {
+    const constellation = HDF_CONSTELLATION[station];
+    const key = constellation.join("-");
+
+    // RAM-Power: TMP darf NICHT geteilt werden
+    if (station === "d.hdf.rom") {
+      seen.set(key, station);
+      continue;
+    }
+
+    // Prüfen, ob Konstellation bereits existiert
+    if (seen.has(key)) {
+      alerts.push({
+        level: "DEFCON-2",
+        station,
+        conflictWith: seen.get(key),
+        constellation,
+        power: "RAM overload"
+      });
+    } else {
+      seen.set(key, station);
+    }
+  }
+
+  return alerts.length > 0
+    ? alerts
+    : [{ level: "OK", msg: "RAM-Power stabil. Alle HDF-Konstellationen eindeutig." }];
+}
 
