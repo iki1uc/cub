@@ -1,10 +1,8 @@
-export const O = {
-  axiom: "O",
-  function: "origin-core",
-  ram: "active",
-  vector: "NC.vector.center",
-  resolver: "tmp.hdf.resolver.js",
-  direction: "CENTER",
-  uniform: 8,
-  center: 9
+export const O_position = {
+  level: 0,
+  mode: "origin",
+  segment: "NC",
+  symbol: "O",
+  vector: "CENTER",
+  timing: 0
 };
