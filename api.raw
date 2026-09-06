@@ -1,1 +1,42 @@
+import { RIR } from "./RIR.Core";
+import { XyX } from "./XyX.js";
+import { trackWork } from "./work.ready";
+import { GPU_WORK_READY } from "./GPU.work.ready";
+import { AXIOMIAT } from "./axiom.map.js";
+
+export function RUN(input) {
+
+  // 1. Reinheitsprüfung
+  const rir = RIR.return(input);
+  if (rir.RIR === "reject") {
+    return { run: "reject", reason: "RIR purity fail" };
+  }
+
+  // 2. Axiom‑Flow (AIR / AIV + Symbol + Segment + Timing)
+  const axiom = XyX(input.x, input.y, input.z);
+
+  // 3. Symbol‑Zone
+  const symbol = axiom.symbol;
+
+  // 4. Segment‑Matrix
+  const segment = axiom.segment;
+
+  // 5. Runtime‑Trigger (work.ready)
+  const work = trackWork(input.x + input.y + input.z);
+
+  // 6. GPU‑Ableitung
+  const gpu = GPU_WORK_READY();
+
+  // 7. Rückgabe
+  return {
+    run: "accept",
+    rir,
+    axiom,
+    symbol,
+    segment,
+    work,
+    gpu,
+    timestamp: new Date().toISOString()
+  };
+}
 
