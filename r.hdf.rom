@@ -1,10 +1,8 @@
-export const R = {
-  axiom: "R",
-  function: "route-shift",
-  ram: "active",
-  vector: "NC.vector.ne",
-  resolver: "tmp.hdf.resolver.js",
-  direction: "NE",
-  uniform: 8,
-  center: 9
+export const R_position = {
+  level: 1,
+  mode: "route",
+  segment: "KANAL",
+  symbol: "▣",
+  vector: "NE",
+  timing: 81
 };
