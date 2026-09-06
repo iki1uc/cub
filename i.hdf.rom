@@ -1,0 +1,10 @@
+export const I = {
+  axiom: "I",
+  function: "input-core",
+  ram: "active",
+  vector: "NC.vector.down",
+  resolver: "tmp.hdf.resolver.js",
+  direction: "S",
+  uniform: 8,
+  center: 9
+};

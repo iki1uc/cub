@@ -1,0 +1,11 @@
+export const D = {
+  axiom: "D",
+  function: "data-flow",
+  ram: "active",
+  vector: "NC.vector.next",
+  resolver: "tmp.hdf.resolver.js",
+  direction: "N",
+  uniform: 8,
+  center: 9
+};
+

@@ -1,0 +1,11 @@
+export const E = {
+  axiom: "E",
+  function: "energy-transfer",
+  ram: "active",
+  directV: "enabled",
+  resolver: "tmp.hdf.resolver.js",
+  direction: "E",
+  uniform: 8,
+  center: 9
+};
+

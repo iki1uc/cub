@@ -1,0 +1,9 @@
+{
+  "JOIN_corridoor_suite": {
+    "warp": "trans",
+    "corridor": "MOVE/",
+    "schnitt": "schnitt.js",
+    "lage": "live-sync-lage.js",
+    "resolver": "tmp.hdf.resolver.js"
+  }
+}

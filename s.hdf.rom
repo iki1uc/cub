@@ -1,0 +1,10 @@
+export const S = {
+  axiom: "S",
+  function: "stream-core",
+  ram: "active",
+  vector: "NC.vector.se",
+  resolver: "tmp.hdf.resolver.js",
+  direction: "SE",
+  uniform: 8,
+  center: 9
+};

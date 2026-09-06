@@ -1,0 +1,10 @@
+export const W = {
+  axiom: "W",
+  function: "wind-transfer",
+  ram: "active",
+  vector: "NC.vector.nw",
+  resolver: "tmp.hdf.resolver.js",
+  direction: "NW",
+  uniform: 8,
+  center: 9
+};

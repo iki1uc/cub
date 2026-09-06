@@ -1,0 +1,10 @@
+export const N = {
+  axiom: "N",
+  function: "node-transfer",
+  ram: "active",
+  vector: "NC.vector.prev",
+  resolver: "tmp.hdf.resolver.js",
+  direction: "W",
+  uniform: 8,
+  center: 9
+};

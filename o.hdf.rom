@@ -1,0 +1,10 @@
+export const O = {
+  axiom: "O",
+  function: "origin-core",
+  ram: "active",
+  vector: "NC.vector.center",
+  resolver: "tmp.hdf.resolver.js",
+  direction: "CENTER",
+  uniform: 8,
+  center: 9
+};
