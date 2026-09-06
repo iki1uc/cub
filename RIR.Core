@@ -30,5 +30,43 @@ export const RIR = {
     const packet = this.filter(input);
     if (!packet) return { RIR: "reject" };
     return { RIR: "accept", packet };
+  },
+
+  // 6. Rad‑Antrieb (Rotation)
+  rad(input) {
+    const p = this.filter(input);
+    if (!p) return { rad: "reject" };
+
+    const rot = (p.x + p.y + p.z) % 360;
+    return { rad: "rotate", deg: rot };
+  },
+
+  // 7. Uhr‑Antrieb (Takt)
+  uhr(input) {
+    const p = this.filter(input);
+    if (!p) return { uhr: "reject" };
+
+    const tick = Math.abs(p.x * 3 + p.y * 9 + p.z * 27);
+    return { uhr: "tick", ms: tick };
+  },
+
+  // 8. Treibstoff‑Antrieb (Energiefluss)
+  fuel(input) {
+    const p = this.filter(input);
+    if (!p) return { fuel: "reject" };
+
+    const energy = Math.sqrt(p.x ** 2 + p.y ** 2 + p.z ** 2);
+    return { fuel: "flow", joule: energy };
+  },
+
+  // 9. Gesamt‑Antrieb (Drive)
+  drive(input) {
+    return {
+      RIR: this.return(input),
+      rad: this.rad(input),
+      uhr: this.uhr(input),
+      fuel: this.fuel(input),
+      timestamp: new Date().toISOString()
+    };
   }
 };
