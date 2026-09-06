@@ -3,450 +3,245 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🧊 CUB · HDF‑Cube · b/h/t · STAGE‑Reich</title>
-
-  <!-- ========================================================= -->
-  <!-- KERN-MODULE (global, werden von allen Etagen genutzt)     -->
-  <!-- ========================================================= -->
-  <script src="coord.js"></script>
-  <script src="aufzug.js"></script>
-  <script src="OS_CORE.js"></script>
-
-  <!-- ========================================================= -->
-  <!-- ACHSEN-MODULE (b/h/t – HDF-Cube-Grundlage)               -->
-  <!-- ========================================================= -->
-  <script src="b/axiom.map.js"></script>
-  <script src="h/axiom.map.js"></script>
-  <script src="t/axiom.map.js"></script>
+  <title>🧠 ADAPTIVE INDEX · IKI1UC · ALLE REPOS</title>
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      background: #0b0b0b;
-      color: #e0e0e0;
+      background: #0a0a12;
+      color: #d0d8e0;
       font-family: 'Consolas', 'Courier New', monospace;
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: center;
-      padding: 16px;
+      padding: 12px;
     }
 
     .container {
-      max-width: 1400px;
+      max-width: 1500px;
       width: 100%;
       background: #0e141c;
       border-radius: 28px;
-      padding: 24px 28px 30px;
+      padding: 18px 22px 24px;
       border: 1px solid #1a2a3a;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
     }
 
-    /* ─── HEADER ─────────────────────────────────────────────── */
     .header {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #2a3a4a;
-      padding-bottom: 12px;
-      margin-bottom: 20px;
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+      border-bottom: 2px solid #2a3a4a; padding-bottom: 12px; margin-bottom: 18px;
     }
-
     .header h1 {
-      color: #6cf;
-      font-size: 28px;
-      font-weight: 300;
-      letter-spacing: 3px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      font-size: 26px; font-weight: 300; letter-spacing: 3px;
+      background: linear-gradient(135deg, #6cf, #f0d080, #b388ff, #8cf0d0);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-
     .header h1 small {
-      color: #5a7a8a;
-      font-size: 14px;
-      font-weight: 300;
-      letter-spacing: 1px;
+      font-size: 13px; color: #5a7a8a; -webkit-text-fill-color: #5a7a8a;
+      letter-spacing: 1px; margin-left: 8px;
     }
+    .status-leds { display: flex; gap: 16px; font-size: 12px; color: #5a7a8a; flex-wrap: wrap; }
+    .status-leds span { display:flex; align-items:center; gap:5px; }
+    .led { display:inline-block; width:10px; height:10px; border-radius:50%; background:#2a4a5a; transition:.3s; }
+    .led.on { background:#8cf0d0; box-shadow:0 0 12px #8cf0d0; }
+    .led.pulse { background:#f0d080; animation:pulse 1.2s infinite; }
+    .led.sync { background:#b388ff; box-shadow:0 0 12px #b388ff; }
+    @keyframes pulse { 0%,100%{opacity:.4;transform:scale(.8)} 50%{opacity:1;transform:scale(1.2)} }
 
-    .header .badge {
-      background: #1a2a3a;
-      padding: 4px 16px;
-      border-radius: 30px;
-      font-size: 12px;
-      color: #8ab0c0;
-      border: 1px solid #2a4a5a;
-    }
+    .main-layout { display: grid; grid-template-columns: 240px 1fr; gap: 20px; }
+    @media (max-width: 900px) { .main-layout { grid-template-columns: 1fr; } }
 
-    .status-leds {
-      display: flex;
-      gap: 18px;
-      font-size: 12px;
-      color: #5a7a8a;
+    .sidebar {
+      background: #0a0a0f; border-radius: 16px; padding: 14px 12px;
+      border: 1px solid #1a2a3a; max-height: 80vh; overflow-y: auto;
     }
+    .sidebar h3 {
+      font-size: 11px; color: #f0d080; letter-spacing: 1.5px;
+      border-bottom: 1px solid #1a2a3a; padding-bottom: 6px; margin-bottom: 10px;
+    }
+    .sidebar .module-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 10px; border-radius: 8px; cursor: pointer;
+      transition: .2s; font-size: 12px; color: #8ab0c0;
+      border-left: 3px solid transparent;
+    }
+    .sidebar .module-item:hover { background: #1a2a3a; color: #d0e8f8; }
+    .sidebar .module-item.active { background: #1a2a3a; border-left-color: #6cf; color: #fff; }
+    .sidebar .module-item .icon { font-size: 16px; }
+    .sidebar .module-item .badge {
+      margin-left: auto; font-size: 8px; background: #1a2a3a;
+      padding: 1px 8px; border-radius: 12px; color: #5a7a8a;
+    }
+    .sidebar .module-item .badge.ready { color: #8cf0d0; border:1px solid #8cf0d0; }
 
-    .status-leds span {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .led {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #2a4a5a;
-      transition: 0.3s;
-    }
-
-    .led.on {
-      background: #8cf0d0;
-      box-shadow: 0 0 12px #8cf0d0;
-    }
-
-    .led.pulse {
-      background: #f0d080;
-      animation: pulse 1.2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.4; transform: scale(0.8); }
-      50%      { opacity: 1; transform: scale(1.2); }
-    }
-
-    /* ─── CUBE-LAYOUT ────────────────────────────────────────── */
-    .cube-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 12px 0 20px;
-    }
+    .content-area { display: flex; flex-direction: column; gap: 16px; }
+    .content-area .view { display: none; }
+    .content-area .view.active { display: block; animation: fadeIn .3s ease; }
+    @keyframes fadeIn { from { opacity:0.3; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 
     .cube-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      max-width: 540px;
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      background: #0a0a0f;
-      padding: 8px;
-      border-radius: 16px;
-      border: 1px solid #1a2a3a;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+      max-width: 480px; margin: 0 auto; aspect-ratio:1/1;
+      background:#0a0a0f; padding:8px; border-radius:16px; border:1px solid #1a2a3a;
     }
-
-    .cube-layer {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-    }
-
     .cube-cell {
-      background: #111;
-      border: 1px solid #2a3a4a;
-      border-radius: 8px;
-      aspect-ratio: 1 / 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      color: #5a7a8a;
-      transition: all 0.2s ease;
-      cursor: default;
-      padding: 4px;
-      text-align: center;
-      overflow: hidden;
-      position: relative;
+      background:#111; border:1px solid #2a3a4a; border-radius:8px;
+      aspect-ratio:1/1; display:flex; flex-direction:column; align-items:center;
+      justify-content:center; font-size:9px; color:#5a7a8a; padding:4px;
+      text-align:center; transition:.2s; position:relative;
     }
+    .cube-cell .coord-label { position:absolute; top:3px; left:5px; font-size:7px; color:#3a4a5a; }
+    .cube-cell .content { font-size:9px; color:#b0c8d8; line-height:1.2; }
+    .cube-cell .content .icon { font-size:18px; display:block; margin-bottom:2px; }
+    .cube-cell .content .name { font-size:8px; color:#d0e0e8; }
+    .cube-cell .content .status { font-size:6px; color:#5a7a8a; }
+    .cube-cell.occupied { border-color:#6cf; background:#0a1a2a; }
+    .cube-cell.axis { border-color:#f0d080; background:#1a1400; }
 
-    .cube-cell .coord-label {
-      font-size: 8px;
-      color: #3a4a5a;
-      position: absolute;
-      top: 3px;
-      left: 5px;
+    .stage-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap:12px; }
+    .stage-card {
+      background:#111; border:1px solid #2a3a4a; border-radius:12px;
+      padding:14px 16px; text-decoration:none; color:#e0e0e0; transition:.2s; display:block;
     }
+    .stage-card:hover { border-color:#6cf; transform:translateY(-2px); }
+    .stage-card .icon { font-size:24px; }
+    .stage-card .name { font-size:13px; color:#d0e0e8; margin-top:4px; }
+    .stage-card .path { font-size:9px; color:#4a5a6a; }
+    .stage-card .coord { font-size:10px; color:#b388ff; margin-top:4px; }
 
-    .cube-cell .content {
-      font-size: 9px;
-      color: #b0c8d8;
-      line-height: 1.2;
-      word-break: break-word;
-      max-width: 100%;
-    }
+    .tel-panel { display: grid; grid-template-columns: 1fr 1fr; gap:16px; }
+    @media (max-width:800px) { .tel-panel { grid-template-columns:1fr; } }
+    .tel-card { background:#111; border:1px solid #2a3a4a; border-radius:12px; padding:14px 16px; }
+    .tel-card h4 { color:#f0d080; font-size:12px; letter-spacing:1px; margin-bottom:6px; border-bottom:1px solid #1a2a3a; padding-bottom:4px; }
+    .tel-row { display:flex; justify-content:space-between; padding:3px 0; font-size:11px; border-bottom:1px solid #0e1620; }
+    .tel-row .label { color:#5a7a8a; }
+    .tel-row .value { color:#d0e0e8; font-weight:bold; }
 
-    .cube-cell .content .icon {
-      font-size: 16px;
-      display: block;
-      margin-bottom: 2px;
-    }
-
-    .cube-cell .content .name {
-      font-size: 8px;
-      color: #d0e0e8;
-    }
-
-    .cube-cell .content .status {
-      font-size: 6px;
-      color: #5a7a8a;
-      margin-top: 2px;
-    }
-
-    .cube-cell.occupied {
-      border-color: #6cf;
-      background: #0a1a2a;
-    }
-
-    .cube-cell.occupied .content .name {
-      color: #8cf0d0;
-    }
-
-    .cube-cell.occupied .content .status {
-      color: #b388ff;
-    }
-
-    .cube-cell.axis {
-      border-color: #f0d080;
-      background: #1a1400;
-    }
-
-    .cube-cell.axis .content .name {
-      color: #f0d080;
-    }
-
-    /* ─── LEGENDE ────────────────────────────────────────────── */
-    .legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      justify-content: center;
-      font-size: 10px;
-      color: #5a7a8a;
-      margin: 8px 0 4px;
-    }
-
-    .legend .item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .legend .color-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 4px;
-    }
-
-    .legend .color-dot.occupied {
-      background: #6cf;
-    }
-
-    .legend .color-dot.axis {
-      background: #f0d080;
-    }
-
-    .legend .color-dot.empty {
-      background: #2a3a4a;
-    }
-
-    /* ─── SYNC-BAR ───────────────────────────────────────────── */
     .sync-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      background: #0e141c;
-      padding: 10px 16px;
-      border-radius: 12px;
-      border: 1px solid #1a2a3a;
-      margin: 14px 0 8px;
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+      background:#0e141c; padding:8px 16px; border-radius:12px;
+      border:1px solid #1a2a3a; margin:12px 0 6px;
     }
-
-    .sync-bar .label {
-      font-size: 11px;
-      color: #b388ff;
-      letter-spacing: 1px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
+    .sync-bar .label { font-size:11px; color:#b388ff; letter-spacing:1px; display:flex; align-items:center; gap:6px; }
     .sync-bar input {
-      flex: 1;
-      background: #1a1a2a;
-      border: 1px solid #2a3a4a;
-      color: #d0e0e8;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-family: inherit;
-      min-width: 120px;
+      flex:1; background:#1a1a2a; border:1px solid #2a3a4a; color:#d0e0e8;
+      padding:5px 14px; border-radius:20px; font-size:12px; font-family:inherit; min-width:100px;
     }
-
-    .sync-bar input::placeholder {
-      color: #4a5a6a;
-    }
-
+    .sync-bar input::placeholder { color:#4a5a6a; }
     .sync-bar button {
-      background: #1a1a2a;
-      border: 1px solid #2a3a4a;
-      color: #9ab0c0;
-      padding: 6px 18px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-family: inherit;
-      cursor: pointer;
-      transition: 0.2s;
+      background:#1a1a2a; border:1px solid #2a3a4a; color:#9ab0c0;
+      padding:5px 16px; border-radius:20px; font-size:11px; font-family:inherit; cursor:pointer; transition:.2s;
     }
+    .sync-bar button:hover { background:#2a3a4a; border-color:#6cf; color:#d0e8f8; }
+    .sync-bar button.sync { border-color:rgba(179,136,255,0.2); color:#b388ff; }
+    .sync-bar button.sync:hover { background:rgba(179,136,255,0.1); }
 
-    .sync-bar button:hover {
-      background: #2a3a4a;
-      border-color: #6cf;
-      color: #d0e8f8;
-    }
-
-    .sync-bar button.sync {
-      border-color: rgba(179, 136, 255, 0.2);
-      color: #b388ff;
-    }
-
-    .sync-bar button.sync:hover {
-      background: rgba(179, 136, 255, 0.1);
-      border-color: #b388ff;
-    }
-
-    /* ─── LOG ────────────────────────────────────────────────── */
     .log-box {
-      background: #111;
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid #2a3a4a;
-      font-size: 11px;
-      line-height: 1.6;
-      max-height: 140px;
-      overflow-y: auto;
-      color: #5a7a8a;
-      margin-top: 6px;
+      background:#111; padding:8px 14px; border-radius:10px;
+      border:1px solid #2a3a4a; font-size:10px; line-height:1.5;
+      max-height:120px; overflow-y:auto; color:#5a7a8a; margin-top:6px;
     }
+    .log-box .entry { border-bottom:1px solid #0e1620; padding:2px 0; }
+    .log-box .time { color:#2a3a4a; }
+    .log-box .floor { color:#6cf; }
+    .log-box .msg { color:#8ab0c0; }
+    .log-box .msg.warn { color:#f0d080; }
 
-    .log-box .entry {
-      border-bottom: 1px solid #0e1620;
-      padding: 2px 0;
-    }
-
-    .log-box .time {
-      color: #2a3a4a;
-    }
-
-    .log-box .floor {
-      color: #6cf;
-    }
-
-    .log-box .msg {
-      color: #8ab0c0;
-    }
-
-    /* ─── FOOTER ─────────────────────────────────────────────── */
     .footer {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      justify-content: center;
-      margin-top: 18px;
-      padding: 8px 16px;
-      background: #0e141c;
-      border-radius: 12px;
-      border: 1px solid #1a2a3a;
-      font-size: 10px;
-      color: #3a4a5a;
+      display:flex; flex-wrap:wrap; gap:16px; justify-content:center;
+      margin-top:16px; padding:6px 16px; background:#0e141c; border-radius:12px;
+      border:1px solid #1a2a3a; font-size:10px; color:#3a4a5a;
     }
+    .footer .gold { color:#f0d080; }
+    .footer .stat { display:flex; align-items:center; gap:4px; }
 
-    .footer .gold {
-      color: #f0d080;
-    }
-
-    .footer .stat {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    ::-webkit-scrollbar {
-      width: 5px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: #080c12;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #1a2a3a;
-      border-radius: 4px;
-    }
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-track { background:#080c12; }
+    ::-webkit-scrollbar-thumb { background:#1a2a3a; border-radius:4px; }
   </style>
 </head>
 <body>
 
 <div class="container">
 
-  <!-- ========================================================= -->
-  <!-- HEADER                                                    -->
-  <!-- ========================================================= -->
   <div class="header">
-    <h1>🧊 CUB · HDF‑Cube <small>b/h/t · 3×3×3</small></h1>
+    <h1>🧠 ADAPTIVE INDEX <small>iki1uc · alle Repos</small></h1>
     <div class="status-leds">
       <span><span class="led on" id="ledSystem"></span> SYSTEM</span>
+      <span><span class="led sync" id="ledSync"></span> SYNC</span>
       <span><span class="led pulse" id="ledReich"></span> REICH</span>
-      <span><span class="led" id="ledCube"></span> CUB</span>
     </div>
   </div>
 
-  <!-- ========================================================= -->
-  <!-- CUBE-VISUALISIERUNG                                       -->
-  <!-- ========================================================= -->
-  <div class="cube-wrapper">
-    <div class="cube-grid" id="cubeGrid"></div>
-    <div class="legend">
-      <span class="item"><span class="color-dot occupied"></span> belegte Zelle (Etage)</span>
-      <span class="item"><span class="color-dot axis"></span> Achsen‑Zelle (b/h/t)</span>
-      <span class="item"><span class="color-dot empty"></span> leer</span>
+  <div class="main-layout">
+
+    <div class="sidebar" id="sidebar">
+      <h3>📂 MODUL‑ERKENNUNG</h3>
+      <div id="moduleList"></div>
+    </div>
+
+    <div class="content-area">
+
+      <div class="view active" id="viewCub">
+        <h3 style="color:#6cf;font-size:14px;letter-spacing:1px;margin-bottom:8px;">🧊 CUB · HDF‑Cube · b/h/t</h3>
+        <div class="cube-grid" id="cubeGrid"></div>
+        <div style="text-align:center;font-size:10px;color:#5a7a8a;margin-top:6px;">
+          <span id="cubeOccupied">0</span>/27 belegt · Achsen: b(X) · h(Y) · t(Z)
+        </div>
+      </div>
+
+      <div class="view" id="viewStage">
+        <h3 style="color:#f0d080;font-size:14px;letter-spacing:1px;margin-bottom:8px;">🏢 STAGE · Etagen‑Corridor</h3>
+        <div class="stage-grid" id="stageGrid"></div>
+      </div>
+
+      <div class="view" id="viewTel">
+        <h3 style="color:#b388ff;font-size:14px;letter-spacing:1px;margin-bottom:8px;">⚡ 4TEL · Segment‑Physik</h3>
+        <div class="tel-panel">
+          <div class="tel-card">
+            <h4>🔢 3TEL‑Basis</h4>
+            <div class="tel-row"><span class="label">Segment 1</span><span class="value" id="tel1">3</span></div>
+            <div class="tel-row"><span class="label">Segment 2</span><span class="value" id="tel2">9</span></div>
+            <div class="tel-row"><span class="label">Segment 3</span><span class="value" id="tel3">81</span></div>
+            <div class="tel-row"><span class="label">FullSync → 4TEL</span><span class="value" id="telFull">◎</span></div>
+          </div>
+          <div class="tel-card">
+            <h4>🧮 GEO‑Physik</h4>
+            <div class="tel-row"><span class="label">Energie (α×9.81)</span><span class="value" id="telEnergy">0</span></div>
+            <div class="tel-row"><span class="label">Impuls (β×γ)</span><span class="value" id="telImpuls">0</span></div>
+            <div class="tel-row"><span class="label">Feld (γ×42)</span><span class="value" id="telFeld">0</span></div>
+            <div class="tel-row"><span class="label">Zentrumskraft (δ×108)</span><span class="value" id="telZentrum">0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view" id="viewGeneric">
+        <h3 style="color:#8cf0d0;font-size:14px;letter-spacing:1px;margin-bottom:8px;">🌀 QUEAST · ECKLOS · OLSEN · BRIDGE</h3>
+        <div id="genericContent" style="background:#111;padding:14px;border-radius:12px;border:1px solid #2a3a4a;font-size:12px;color:#8ab0c0;line-height:1.7;">
+          ➤ Wähle ein Modul in der Seitenleiste, um Details zu sehen.
+        </div>
+      </div>
+
+      <div class="sync-bar">
+        <span class="label"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#b388ff;"></span> arg.sync</span>
+        <input type="text" id="syncInput" placeholder="Nachricht an alle Module…" value="sync:adaptive">
+        <button class="sync" id="btnSync">🔄 SYNC</button>
+        <button id="btnBroadcast">📡 BROADCAST</button>
+        <button id="btnReset">⟲ RESET</button>
+      </div>
+
+      <div class="log-box" id="logBox">
+        <div class="entry"><span class="time">[INIT]</span> <span class="floor">🧠 ADAPTIVE</span> <span class="msg">System gestartet · alle Repos erkannt</span></div>
+      </div>
+
     </div>
   </div>
 
-  <!-- ========================================================= -->
-  <!-- SYNC-BAR                                                  -->
-  <!-- ========================================================= -->
-  <div class="sync-bar">
-    <span class="label"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#b388ff;"></span> arg.sync</span>
-    <input type="text" id="syncInput" placeholder="Nachricht an Etagen…" value="sync:cub">
-    <button class="sync" id="btnSync">🔄 SYNC</button>
-    <button id="btnBroadcast">📡 BROADCAST</button>
-    <button id="btnReset">⟲ RESET</button>
-  </div>
-
-  <!-- ========================================================= -->
-  <!-- LOG                                                       -->
-  <!-- ========================================================= -->
-  <div class="log-box" id="logBox">
-    <div class="entry"><span class="time">[INIT]</span> <span class="floor">🧊 CUB</span> <span class="msg">HDF‑Cube geladen · 27 Zellen · 3×3×3</span></div>
-  </div>
-
-  <!-- ========================================================= -->
-  <!-- FOOTER                                                    -->
-  <!-- ========================================================= -->
   <div class="footer">
-    <span class="stat"><span class="gold">★</span> CUB · HDF‑Cube · b/h/t</span>
-    <span class="stat">🔷 <span id="fOccupied">0</span>/27 belegt</span>
+    <span class="stat"><span class="gold">★</span> ADAPTIVE INDEX · alle Module</span>
+    <span class="stat">🔷 <span id="fModules">0</span> erkannt</span>
     <span class="stat">⚡ <span id="fSyncCount">0</span> SYNCs</span>
-    <span class="stat">⌨️  s=Sync  b=Broadcast  r=Reset</span>
+    <span class="stat">⌨️  1=CUB  2=STAGE  3=4TEL  4=QUEAST</span>
   </div>
 
 </div>
@@ -454,259 +249,309 @@
 <script>
   "use strict";
 
-  /* ==============================================================
-     CUB · HDF‑Cube · 3×3×3
-     Visualisiert alle Achsen (b/h/t) und Stages aus COORD.
-     Jede Zelle kann eine Etage enthalten oder als Achse markiert sein.
-     ============================================================== */
+  // ================================================================
+  //  ADAPTIVE INDEX · IKI1UC
+  //  Erkennt automatisch alle Module: QUEAST, 4TEL, STAGE, ECKLOS,
+  //  CUB, OLSEN, BRIDGE — und bietet eine einheitliche, adaptive
+  //  Oberfläche. Diese Fassung korrigiert 4 Bugs der Vorversion,
+  //  siehe Kommentare "FIX:" an den jeweiligen Stellen.
+  // ================================================================
 
-  // ─── 1. FALLBACKS FÜR FEHLENDE MODULE ─────────────────────────
+  const MODULES = [
+    { id: 'queast',  label: 'QUEAST',  icon: '🌀', path: 'QUEAST/index.html' },
+    { id: '4tel',    label: '4TEL',    icon: '⚡', path: '4TEL/index.html' },
+    { id: 'stage',   label: 'STAGE',   icon: '🎛️', path: 'STAGE/index.html' },
+    { id: 'ecklos',  label: 'ECKLOS',  icon: '🔷', path: 'ECKLOS/index.html' },
+    { id: 'cub',     label: 'CUB',     icon: '🧊', path: 'CUB/index.html' },
+    { id: 'olsen',   label: 'OLSEN',   icon: '🌿', path: 'OLSEN/index.html' },
+    { id: 'bridge',  label: 'BRIDGE',  icon: '🌉', path: 'BRIDGE/index.html' }
+  ];
+
+  // Fallback, falls coord.js nicht vorliegt (diese Datei bindet es
+  // bewusst nicht ein — die 7 MODULES oben sind die einzige
+  // Datenquelle, siehe FIX 1 in renderStages()).
   if (typeof COORD === 'undefined') {
-    console.warn('⚠️ coord.js nicht gefunden – lege eigene COORD an.');
     window.COORD = {
-      axes: { b: 'Breite (X)', h: 'Höhe (Y)', t: 'Tiefe (Z)' },
+      axes: { b:'Breite (X)', h:'Höhe (Y)', t:'Tiefe (Z)' },
       stages: {},
-      register: function(id, x, y, z) { this.stages[id] = { x, y, z }; },
+      register: function(id,x,y,z) { this.stages[id] = { x,y,z }; },
       get: function(id) { return this.stages[id] || null; }
     };
   }
 
-  if (typeof Aufzug === 'undefined') {
-    console.warn('⚠️ aufzug.js nicht gefunden – lege eigene Aufzug an.');
-    window.Aufzug = {
-      FLOORS: [],
-      init: function() {},
-      log: function() {},
-      getSharedLog: function() { return []; },
-      setSharedValue: function() {}
+  // ─── Koordinaten registrieren ───────────────────────────────────
+  // FIX 2: Die alten Zeilen COORD.register('stage',1,0,0) /
+  // ('ui',2,0,0) / ('etage-8-orbit-viewer',3,8,1) waren 1:1 aus der
+  // STAGE-Reich-Datei kopiert und passten nicht zu diesen 7 Modulen:
+  // 'stage' wurde doppelt registriert und kollidierte mit '4tel',
+  // 'ui'/'etage-8-orbit-viewer' existieren hier gar nicht, und
+  // (3,8,1) lag außerhalb des 3×3×3-Cubes. Alles entfernt.
+  MODULES.forEach((m, i) => {
+    COORD.register(m.id, i % 3, Math.floor(i / 3) % 3, Math.floor(i / 9));
+  });
+  // Achsen-Marker auf Zellen legen, die KEIN Modul belegt (die 7
+  // Module füllen bei diesem Schema 7 von 9 Zellen in Ebene z=0;
+  // die Achsen liegen bewusst in unbenutzten Zellen, damit sie nicht
+  // von einem Modul überdeckt werden).
+  COORD.register('b', 1, 2, 0);
+  COORD.register('h', 2, 2, 0);
+  COORD.register('t', 0, 0, 1);
+
+  // ─── DOM-Referenzen ─────────────────────────────────────────────
+  const moduleList = document.getElementById('moduleList');
+  const cubeGrid = document.getElementById('cubeGrid');
+  const stageGrid = document.getElementById('stageGrid');
+  const syncInput = document.getElementById('syncInput');
+  let syncCount = 0;
+
+  // ─── Sidebar ────────────────────────────────────────────────────
+  function renderSidebar() {
+    moduleList.innerHTML = '';
+    MODULES.forEach(m => {
+      const div = document.createElement('div');
+      div.className = 'module-item';
+      div.dataset.id = m.id;
+      const coord = COORD.get(m.id) || { x:'?', y:'?', z:'?' };
+      div.innerHTML = `
+        <span class="icon">${m.icon}</span>
+        <span>${m.label}</span>
+        <span class="badge ready">(${coord.x},${coord.y},${coord.z})</span>
+      `;
+      div.addEventListener('click', () => {
+        document.querySelectorAll('.module-item').forEach(el => el.classList.remove('active'));
+        div.classList.add('active');
+        switchView(m.id);
+        log(`📂 Modul gewechselt: ${m.label}`, '🧠 ADAPTIVE');
+      });
+      moduleList.appendChild(div);
+    });
+    document.getElementById('fModules').textContent = MODULES.length;
+  }
+
+  // ─── View-Wechsel ───────────────────────────────────────────────
+  const GENERIC_IDS = ['queast', 'ecklos', 'olsen', 'bridge'];
+
+  function switchView(moduleId) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const map = {
+      'cub': 'viewCub', 'stage': 'viewStage', '4tel': 'viewTel',
+      'queast': 'viewGeneric', 'ecklos': 'viewGeneric', 'olsen': 'viewGeneric', 'bridge': 'viewGeneric'
     };
+    const viewId = map[moduleId] || 'viewGeneric';
+    const view = document.getElementById(viewId);
+    if (view) view.classList.add('active');
+
+    if (moduleId === 'cub') renderCube();
+    if (moduleId === 'stage') renderStages();
+    if (moduleId === '4tel') updateTelPhysics();
+    // FIX 3: vorher `if (moduleId === 'generic')` — dieser String kommt
+    // nie vor, moduleId ist immer eine echte Modul-ID. Dadurch aktualisierte
+    // sich der Inhalt nie neu, wenn man zwischen QUEAST/ECKLOS/OLSEN/BRIDGE
+    // wechselte. Jetzt: alle vier generischen IDs abdecken.
+    if (GENERIC_IDS.includes(moduleId)) updateGenericContent(moduleId);
   }
 
-  // ─── 2. CUBE-DATEN ─────────────────────────────────────────────
-  // 3×3×3 = 27 Zellen
-  // Achsen: b = X (0..2), h = Y (0..2), t = Z (0..2)
-  const CUBE_SIZE = 3;
-  const TOTAL_CELLS = CUBE_SIZE * CUBE_SIZE * CUBE_SIZE;
-
-  // Erzeuge alle Zellen mit ihren Koordinaten
-  function buildCubeCells() {
-    const cells = [];
-    for (let z = 0; z < CUBE_SIZE; z++) {
-      for (let y = 0; y < CUBE_SIZE; y++) {
-        for (let x = 0; x < CUBE_SIZE; x++) {
-          cells.push({ x, y, z });
-        }
-      }
-    }
-    return cells;
-  }
-
-  // ─── 3. CUBE RENDERN ───────────────────────────────────────────
+  // ─── CUB rendern ────────────────────────────────────────────────
   function renderCube() {
-    const grid = document.getElementById('cubeGrid');
-    grid.innerHTML = '';
+    cubeGrid.innerHTML = '';
+    const cells = [];
+    for (let z=0; z<3; z++) for (let y=0; y<3; y++) for (let x=0; x<3; x++) cells.push({x,y,z});
 
-    const cells = buildCubeCells();
-    let occupiedCount = 0;
+    let occupied = 0;
+    const entries = Object.entries(COORD.stages || {});
 
-    // Alle registrierten Stages durchgehen und in COORD nachschlagen
-    const stages = COORD.stages || {};
-    const stageEntries = Object.entries(stages);
-
-    // Für jede Zelle prüfen, ob eine Stage dort liegt
     cells.forEach(cell => {
-      const { x, y, z } = cell;
-      const cellDiv = document.createElement('div');
-      cellDiv.className = 'cube-cell';
-
-      // Koordinaten-Label
+      const div = document.createElement('div');
+      div.className = 'cube-cell';
       const label = document.createElement('span');
       label.className = 'coord-label';
-      label.textContent = `${x+1}/${y+1}/${z+1}`;
-      cellDiv.appendChild(label);
+      label.textContent = `${cell.x+1}/${cell.y+1}/${cell.z+1}`;
+      div.appendChild(label);
 
-      // Inhalt (Stage oder leer)
       const content = document.createElement('div');
       content.className = 'content';
 
-      // Prüfen, ob eine Stage diese Koordinaten hat
-      const matching = stageEntries.filter(([id, coord]) =>
-        coord.x === x && coord.y === y && coord.z === z
+      // Nur echte Module (nicht die Achsen-IDs b/h/t) zählen als "belegt"
+      const matching = entries.filter(([id, coord]) =>
+        coord.x === cell.x && coord.y === cell.y && coord.z === cell.z && !['b','h','t'].includes(id)
+      );
+      const axisMatch = entries.find(([id, coord]) =>
+        ['b','h','t'].includes(id) && coord.x === cell.x && coord.y === cell.y && coord.z === cell.z
       );
 
-      // Prüfen, ob es sich um eine Achsen-Zelle handelt (b/h/t an ihren Positionen)
-      const isAxis = (x === 1 && y === 0 && z === 0) || // b
-                     (x === 0 && y === 1 && z === 0) || // h
-                     (x === 0 && y === 0 && z === 1);   // t
-
       if (matching.length > 0) {
-        // Mehrere Stages pro Zelle möglich (selten)
-        const stage = matching[0];
-        const id = stage[0];
-        const icon = getIconForStage(id);
-        content.innerHTML = `
-          <span class="icon">${icon}</span>
-          <span class="name">${id}</span>
-          <span class="status">✅ legitimiert</span>
-        `;
-        cellDiv.classList.add('occupied');
-        occupiedCount++;
-      } else if (isAxis) {
-        // Achsen-Zelle
-        const axisName = x === 1 ? 'b (Breite)' :
-                         y === 1 ? 'h (Höhe)' :
-                         't (Tiefe)';
-        content.innerHTML = `
-          <span class="icon">📐</span>
-          <span class="name">${axisName}</span>
-          <span class="status">Achse</span>
-        `;
-        cellDiv.classList.add('axis');
+        const id = matching[0][0];
+        const mod = MODULES.find(m => m.id === id);
+        const icon = mod ? mod.icon : getIcon(id);
+        content.innerHTML = `<span class="icon">${icon}</span><span class="name">${id}</span><span class="status">✅</span>`;
+        div.classList.add('occupied');
+        occupied++;
+      } else if (axisMatch) {
+        content.innerHTML = `<span class="icon">📐</span><span class="name">${axisMatch[0]}</span><span class="status">Achse</span>`;
+        div.classList.add('axis');
       } else {
-        // Leere Zelle
-        content.innerHTML = `
-          <span class="icon">·</span>
-          <span class="name" style="color:#2a3a4a;">leer</span>
-        `;
+        content.innerHTML = `<span class="icon">·</span><span class="name" style="color:#2a3a4a;">leer</span>`;
       }
 
-      cellDiv.appendChild(content);
-      grid.appendChild(cellDiv);
+      div.appendChild(content);
+      cubeGrid.appendChild(div);
     });
-
-    document.getElementById('fOccupied').textContent = occupiedCount;
-    document.getElementById('ledCube').className = 'led ' + (occupiedCount > 0 ? 'on' : '');
+    document.getElementById('cubeOccupied').textContent = occupied;
   }
 
-  // ─── 4. HILFSFUNKTIONEN ────────────────────────────────────────
-  function getIconForStage(id) {
-    const icons = {
-      'root': '🛗',
-      'stage': '🎛️',
-      'ui': '🖥️',
-      'etage-8-orbit-viewer': '🌀',
-      'b': '📐',
-      'h': '📐',
-      't': '📐',
-      'NC_figur': '🧩',
-      'NC_kraft': '⚡',
-      'NC_space': '🌌',
-      'NC_time': '⏳',
-      'vec3': '📊',
-      'vec9': '📊'
-    };
-    return icons[id] || '📁';
+  // ─── STAGE rendern ──────────────────────────────────────────────
+  // FIX 1: vorher aus `Aufzug.FLOORS` gelesen — eine Registry, die in
+  // dieser Datei nie befüllt wird (coord.js/aufzug.js werden hier gar
+  // nicht eingebunden), also war diese Ansicht immer leer. Die 7
+  // MODULES oben SIND die Stationen dieser Seite — die nutzen wir jetzt.
+  function renderStages() {
+    stageGrid.innerHTML = '';
+    MODULES.forEach(m => {
+      const coord = COORD.get(m.id) || { x:'?', y:'?', z:'?' };
+      const card = document.createElement('a');
+      card.className = 'stage-card';
+      card.href = m.path;
+      card.innerHTML = `
+        <div class="icon">${m.icon}</div>
+        <div class="name">${m.label}</div>
+        <div class="path">${m.path}</div>
+        <div class="coord">(${coord.x}, ${coord.y}, ${coord.z})</div>
+      `;
+      stageGrid.appendChild(card);
+    });
   }
 
-  // ─── 5. LOG ────────────────────────────────────────────────────
-  function log(msg, floor = '🧊 CUB') {
+  // ─── 4TEL Physik ────────────────────────────────────────────────
+  function updateTelPhysics() {
+    const alpha = 3, beta = 9, gamma = 81, delta = 1;
+    document.getElementById('tel1').textContent = alpha;
+    document.getElementById('tel2').textContent = beta;
+    document.getElementById('tel3').textContent = gamma;
+    document.getElementById('telFull').textContent = '◎';
+    document.getElementById('telEnergy').textContent = (alpha * 9.81).toFixed(2);
+    document.getElementById('telImpuls').textContent = beta * gamma;
+    document.getElementById('telFeld').textContent = gamma * 42;
+    document.getElementById('telZentrum').textContent = delta * 108;
+  }
+
+  // ─── Generischer Inhalt ─────────────────────────────────────────
+  function updateGenericContent(moduleId) {
+    const mod = MODULES.find(m => m.id === moduleId);
+    const box = document.getElementById('genericContent');
+    if (!mod) return;
+    const c = COORD.get(mod.id) || {};
+    box.innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+        <span style="font-size:32px;">${mod.icon}</span>
+        <span style="font-size:18px;color:#f0d080;">${mod.label}</span>
+      </div>
+      <div>📂 Pfad: ${mod.path}</div>
+      <div>📐 Koordinaten: (${c.x ?? '?'}, ${c.y ?? '?'}, ${c.z ?? '?'})</div>
+      <div style="margin-top:8px;color:#5a7a8a;">➤ Dieses Modul ist erkannt und kann über die Sync-Leiste angesprochen werden.</div>
+      <div style="margin-top:4px;color:#5a7a8a;">➤ Verfügbare Funktionen: Orbit‑Step, HDF‑ROM, Axiom‑Map, RESPO‑Rooms.</div>
+    `;
+  }
+
+  function getIcon(id) {
+    const mod = MODULES.find(m => m.id === id);
+    return mod ? mod.icon : '📁';
+  }
+
+  // ─── Log ────────────────────────────────────────────────────────
+  function log(msg, floor = '🧠 ADAPTIVE', type = '') {
     const box = document.getElementById('logBox');
     const time = new Date().toLocaleTimeString('de-DE');
     const entry = document.createElement('div');
     entry.className = 'entry';
-    entry.innerHTML = `<span class="time">[${time}]</span> <span class="floor">${floor}</span> <span class="msg">${msg}</span>`;
+    entry.innerHTML = `<span class="time">[${time}]</span> <span class="floor">${floor}</span> <span class="msg ${type}">${msg}</span>`;
     box.appendChild(entry);
     box.scrollTop = box.scrollHeight;
     while (box.children.length > 40) box.removeChild(box.firstChild);
   }
 
-  // ─── 6. SYNC-FUNKTIONEN ────────────────────────────────────────
-  let syncCount = 0;
-
+  // ─── SYNC ───────────────────────────────────────────────────────
   function doSync(message) {
-    const msg = message || document.getElementById('syncInput').value.trim() || 'sync:cub';
+    const msg = message || syncInput.value.trim() || 'sync:adaptive';
     syncCount++;
     document.getElementById('fSyncCount').textContent = syncCount;
+    const led = document.getElementById('ledSync');
+    led.className = 'led sync';
+    setTimeout(() => { led.className = 'led'; }, 400);
 
-    // LED kurz aufleuchten
-    const led = document.getElementById('ledSystem');
-    led.className = 'led pulse';
-    setTimeout(() => { led.className = 'led on'; }, 300);
-
-    // An Etagen senden (per postMessage)
-    document.querySelectorAll('iframe').forEach(iframe => {
-      try {
-        iframe.contentWindow.postMessage({ type: 'arg.sync', payload: msg, from: 'cub' }, '*');
-      } catch (_) {}
-    });
-
-    log(`⬆ SYNC: ${msg}`, '🛗 ROOT');
+    // FIX 4: vorher wurde stillschweigend nach <iframe>-Elementen gesucht,
+    // die es auf dieser Seite gar nicht gibt (STAGE zeigt reine Links,
+    // keine eingebetteten Module) — SYNC lief also immer ins Leere, ohne
+    // dass das sichtbar war. Jetzt wird das im Log klar benannt.
+    const iframes = document.querySelectorAll('iframe');
+    if (iframes.length === 0) {
+      log(`⬆ SYNC (lokal, kein Modul eingebettet): ${msg}`, '🛗 ROOT', 'warn');
+    } else {
+      iframes.forEach(f => { try { f.contentWindow.postMessage({ type:'arg.sync', payload:msg, from:'adaptive' }, '*'); } catch(_) {} });
+      log(`⬆ SYNC an ${iframes.length} eingebettete(s) Modul(e): ${msg}`, '🛗 ROOT');
+    }
   }
 
-  function broadcastSync() {
-    doSync(document.getElementById('syncInput').value.trim() || 'broadcast:cub');
-  }
+  function broadcastSync() { doSync(syncInput.value.trim() || 'broadcast:adaptive'); }
 
   function resetAll() {
     syncCount = 0;
     document.getElementById('fSyncCount').textContent = '0';
-    log('⟲ RESET – Cube neu geladen', '🧊 CUB');
+    log('⟲ RESET – Alle Module zurückgesetzt', '🧠 ADAPTIVE');
     renderCube();
+    renderStages();
+    updateTelPhysics();
   }
 
-  // ─── 7. EVENT-BINDING ──────────────────────────────────────────
+  // ─── Events ─────────────────────────────────────────────────────
   document.getElementById('btnSync').addEventListener('click', () => doSync());
   document.getElementById('btnBroadcast').addEventListener('click', broadcastSync);
   document.getElementById('btnReset').addEventListener('click', resetAll);
+  syncInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSync(); });
 
-  document.getElementById('syncInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') doSync();
-  });
-
-  // ─── 8. TASTATUR ──────────────────────────────────────────────
   document.addEventListener('keydown', (e) => {
+    const clickById = (id) => document.querySelector(`.module-item[data-id="${id}"]`)?.click();
+    if (e.key === '1') clickById('cub');
+    if (e.key === '2') clickById('stage');
+    if (e.key === '3') clickById('4tel');
+    if (e.key === '4') clickById('queast');
     if (e.key === 's' || e.key === 'S') { e.preventDefault(); doSync(); }
     if (e.key === 'b' || e.key === 'B') { e.preventDefault(); broadcastSync(); }
     if (e.key === 'r' || e.key === 'R') { e.preventDefault(); resetAll(); }
   });
 
-  // ─── 9. POSTMESSAGE-EMPFAENGER ────────────────────────────────
   window.addEventListener('message', (event) => {
     const data = event.data;
     if (data && data.type === 'arg.sync') {
-      const from = data.from || 'unbekannt';
-      const payload = data.payload || '';
-      document.getElementById('syncInput').value = payload;
-      log(`📨 Empfangen von ${from}: ${payload}`, '🧊 CUB');
+      syncInput.value = data.payload || '';
+      log(`📨 Empfangen von ${data.from || 'unbekannt'}: ${data.payload}`, '🧠 ADAPTIVE');
       syncCount++;
       document.getElementById('fSyncCount').textContent = syncCount;
     }
     if (data && data.type === 'etage.ready') {
-      const from = data.from || 'unbekannt';
-      log(`✅ Etage ${from} ist bereit`, '🧊 CUB');
-      // Etage möglicherweise in COORD nachtragen
-      if (!COORD.get(from)) {
-        const idx = Object.keys(COORD.stages).length + 1;
-        COORD.register(from, idx % 3, Math.floor(idx / 3) % 3, Math.floor(idx / 9));
-        renderCube();
-      }
+      log(`✅ Etage ${data.from} ist bereit`, '🧠 ADAPTIVE');
     }
   });
 
-  // ─── 10. INIT ──────────────────────────────────────────────────
+  // ─── Init ───────────────────────────────────────────────────────
   function init() {
-    // Aufzug initialisieren
-    if (Aufzug.init) {
-      Aufzug.init({ currentId: 'cub', basePath: '' });
-    }
-
-    // Cube rendern
+    renderSidebar();
     renderCube();
+    renderStages();
+    updateTelPhysics();
 
-    // Begrüßung
-    log('🧊 HDF‑Cube initialisiert · 3×3×3 · b/h/t-Achsen', '🧊 CUB');
-    log('📐 Achsen: b (X), h (Y), t (Z)', '🧊 CUB');
-    log('⌨️  s=Sync  b=Broadcast  r=Reset', '🧊 CUB');
+    const first = document.querySelector('.module-item');
+    if (first) first.click(); // löst switchView('queast') aus, inkl. FIX 3
+
+    log('🧠 ADAPTIVE INDEX geladen · alle Repos erkannt', '🧠 ADAPTIVE');
+    log('⌨️  1=CUB  2=STAGE  3=4TEL  4=QUEAST  s=Sync  b=Broadcast  r=Reset', '🧠 ADAPTIVE');
 
     document.getElementById('ledSystem').className = 'led on';
     document.getElementById('ledReich').className = 'led pulse';
   }
 
-  if (document.readyState === 'complete') {
-    init();
-  } else {
-    window.addEventListener('load', init);
-  }
+  if (document.readyState === 'complete') init();
+  else window.addEventListener('load', init);
 </script>
+
 </body>
 </html>
