@@ -1,1 +1,6 @@
-pipeline21.ready
+export const SLI_AXIOM_READY = {
+  home: "sli.axiom.raw",
+  time: "◎",
+  depth: 81,
+  orbit: ["◉","3","9","◎","81","◆","△","27","▣","↺"]
+};
