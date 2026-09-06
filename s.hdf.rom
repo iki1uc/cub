@@ -1,10 +1,8 @@
-export const S = {
-  axiom: "S",
-  function: "stream-core",
-  ram: "active",
-  vector: "NC.vector.se",
-  resolver: "tmp.hdf.resolver.js",
-  direction: "SE",
-  uniform: 8,
-  center: 9
+export const S_position = {
+  level: 1,
+  mode: "stream",
+  segment: "TMP-beta",
+  symbol: "◎",
+  vector: "SE",
+  timing: 27
 };
