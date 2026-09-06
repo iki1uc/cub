@@ -1,0 +1,13 @@
+<div class="content">
+  <h1>IKI1UC · Axiom-Orbit-Matrix</h1>
+  <canvas id="orbitCanvas"></canvas>
+  <button>Orbit-Schritt</button>
+  <button>Reset</button>
+  <h3>IQQ-Achse</h3>
+  <p class="axis">9 → 3 → 9 → 3</p>
+  <h3>OCTA-Orbit</h3>
+  <p class="axis">◎ ◉ ◆ △ ▣ ↺</p>
+  <h3>A81-Potenzen</h3>
+  <p class="axis">27 · 81 · 243 · 729</p>
+  <div id="log"></div>
+</div>
