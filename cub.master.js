@@ -1,0 +1,9 @@
+export const D = { axiom:"D", function:"data-flow",    ram:"active", vector:"NC.vector.n",  direction:"N",  uniform:8, center:9 };
+export const E = { axiom:"E", function:"energy-transfer", ram:"active", vector:"NC.vector.e",  direction:"E",  uniform:8, center:9 };
+export const I = { axiom:"I", function:"input-core",   ram:"active", vector:"NC.vector.s",  direction:"S",  uniform:8, center:3 };
+export const N = { axiom:"N", function:"node-transfer", ram:"active", vector:"NC.vector.w",  direction:"W",  uniform:8, center:81 };
+export const O = { axiom:"O", function:"origin-core",  ram:"active", vector:"NC.vector.center", direction:"CENTER", uniform:0, center:0 };
+export const R = { axiom:"R", function:"route-shift",  ram:"active", vector:"NC.vector.ne", direction:"NE", uniform:8, center:27 };
+export const S = { axiom:"S", function:"stream-core",  ram:"active", vector:"NC.vector.se", direction:"SE", uniform:8, center:81 };
+export const U = { axiom:"U", function:"under-core",   ram:"active", vector:"NC.vector.sw", direction:"SW", uniform:8, center:243 };
+export const W = { axiom:"W", function:"wind-transfer", ram:"active", vector:"NC.vector.nw", direction:"NW", uniform:8, center:27 };
